@@ -41,7 +41,7 @@ endmacro
 
 
 ; These bridge routines must live in bank $85
-org $85FFF0
+org $85FFF8
 print pc, " crash bank85 start"
 wait_for_lag_frame_long:
     JSR $8136
@@ -49,14 +49,6 @@ wait_for_lag_frame_long:
 
 initialize_ppu_long:
     JSR $8143
-    RTL
-
-restore_ppu_long:
-    JSR $861A
-    RTL
-
-play_music_long:
-    JSR $8574
     RTL
 
 print pc, " crash bank85 end"
@@ -179,7 +171,7 @@ CrashViewer:
 
     JSL crash_cgram_transfer
     JSL crash_tileset_transfer
-    JSL play_music_long ; Play 2 lag frames of music and sound effects
+    JSL wait_for_lag_frame_long ; Wait for lag frame
 
     JSL CrashLoop
 }
@@ -204,8 +196,6 @@ endif
 
     ; handle input loop stuff
     JSL wait_for_lag_frame_long ; Wait for lag frame
-    JSL $808F0C ; Music queue
-    JSL $8289EF ; Sound fx queue
     JSL $809459 ; Read controller input
 
     ; new inputs in X, to be copied back to A later
@@ -512,8 +502,6 @@ crash_tilemap_transfer:
     %a8()
     LDA #$80 : STA $2115
     LDA #$02 : STA $420B
-    JSL $808F0C ; Handle music queue
-    JSL $8289EF ; Handle sounds
     %a16()
     RTL
 }
