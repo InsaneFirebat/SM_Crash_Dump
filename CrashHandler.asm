@@ -12,7 +12,7 @@ lorom
 !Bank80Freespace = $80E000 ; >2D0h bytes
 !CodeFreespace = $80E200 ; >640h bytes if single page, <A00h bytes if extra pages enabled, banks $80-BF
 !TextFreespace = $DEEE00 ; >100-200h bytes that can live anywhere in the ROM
-!GraphicsFreespace = $DEF000 ; 1000h bytes that can live anywhere in the ROM
+!GraphicsFreespace = $DEF000 ; A00h bytes that can live anywhere in the ROM
 
 !CRASHDUMP = $7FFC00 ; ~70h bytes
 !ram_tilemap_buffer = $7E5800 ; 800h bytes
@@ -990,7 +990,7 @@ crash_tileset_transfer:
     LDX #$4000 : STX $2116 ; VRAM address (8000 in vram)
     LDX #crash_gfx_table : STX $4302 ; Source offset
     LDA #crash_gfx_table>>16 : STA $4304 ; Source bank
-    LDX #$1000 : STX $4305 ; Size (0x10 = 1 tile)
+    LDX #$0A00 : STX $4305 ; Size (0x10 = 1 tile)
     LDA #$01 : STA $4300 ; word, normal increment (DMA MODE)
     LDA #$18 : STA $4301 ; destination (VRAM write)
     LDA #$01 : STA $420B ; initiate DMA (channel 1)
@@ -1119,12 +1119,12 @@ print pc, " crash text end"
 ; Graphics
 ; --------
 
-; 1000h bytes of 2bpp graphics (same as HUD)
+; A00h bytes of 2bpp graphics (same as HUD)
 ; Can be placed anywhere in the rom
 org !GraphicsFreespace
 print pc, " Crash graphics start"
 crash_gfx_table:
-    ; 1000h bytes
+    ; A00h bytes
     incbin resources/crash_gfx.bin
 print pc, " Crash graphics end"
 
