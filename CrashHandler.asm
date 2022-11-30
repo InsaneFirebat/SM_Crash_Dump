@@ -344,8 +344,8 @@ endif
 
   .checkInputs
 if !EXTRA_PAGES
-    TXA : AND #$5090 : BNE .next       ; A + Y + Start
-    TXA : AND #$A060 : BNE .previous   ; B + X + Select
+    TXA : AND #$5080 : BNE .next       ; A + Y + Start
+    TXA : AND #$A040 : BNE .previous   ; B + X + Select
 endif
     TXA : AND #$0010 : BNE .incPalette ; R
     TXA : AND #$0020 : BNE .decPalette ; L
@@ -1070,12 +1070,12 @@ CrashTextStack4:
     db "Stack OVERFLOW!!!", #$FF
 
 CrashTextFooter1:
-; Navigate pages with <>LRAB
-    db "Navigate pages with ", #$81, #$80, #$8D, #$8C, #$8F, #$87, #$FF
+; Navigate pages with SlStABXY
+    db "Navigate pages with ", #$84, #$85, #$8F, #$87, #$8E, #$86, #$FF
 
 CrashTextFooter2:
-; Cycle palettes with ^ or v
-    db "Cycle palettes with ", #$83, " or ", #$82, #$FF
+; Cycle palettes with L or R
+    db "Cycle palettes with ", #$8D, " or ", #$8C, #$FF
 
 if !EXTRA_PAGES
 CrashTextFooter3:
