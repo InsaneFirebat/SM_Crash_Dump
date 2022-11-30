@@ -397,7 +397,6 @@ CrashDump:
     LDA.l #CrashTextHeader>>16 : STA !ram_crash_text_bank
     LDX #$0086 : JSR crash_draw_text
 
-    ; -- Draw footer message --
     LDA.l #CrashTextFooter1 : STA !ram_crash_text
     LDA.l #CrashTextFooter1>>16 : STA !ram_crash_text_bank
     LDX #$0646 : JSR crash_draw_text
@@ -1052,7 +1051,7 @@ print pc, " crash text start"
 
 CrashTextHeader:
     table resources/header.tbl
-    db #$28, "SM SHOT ITSELF IN THE FOOT", #$FF
+    db "SM SHOT ITSELF IN THE FOOT", #$FF
     table resources/normal.tbl
 
 CrashTextStack1:
@@ -1069,47 +1068,47 @@ CrashTextStack4:
 
 CrashTextFooter1:
 ; Navigate pages with <>LRAB
-    db #$28, "Navigate pages with ", #$81, #$80, #$8D, #$8C, #$8F, #$87, #$FF
+    db "Navigate pages with ", #$81, #$80, #$8D, #$8C, #$8F, #$87, #$FF
 
 CrashTextFooter2:
 ; Cycle palettes with ^ or v
-    db #$28, "Cycle palettes with ", #$83, " or ", #$82, #$FF
+    db "Cycle palettes with ", #$83, " or ", #$82, #$FF
 
 if !EXTRA_PAGES
 CrashTextFooter3:
-    db #$28, "Super Metroid has crashed!", #$FF
+    db "Super Metroid has crashed!", #$FF
 
 CrashTextFooter4:
-    db #$28, "Report this to HACK_AUTHOR", #$FF
+    db "Report this to HACK_AUTHOR", #$FF
 
 CrashTextHeader2:
     table resources/header.tbl
-    db #$28, "CRASH MEMORY VIEWER", #$FF
+    db "CRASH MEMORY VIEWER", #$FF
     table resources/normal.tbl
 
 CrashTextMemAddress:
-    db #$28, "ADDRESS:  $", #$FF
+    db "ADDRESS:  $", #$FF
 
 CrashTextMemValue:
-    db #$28, "VALUE:    $", #$FF
+    db "VALUE:    $", #$FF
 
 CrashTextMemSelectBank:
-    db #$28, "Select Address Bank  $", #$FF
+    db "Select Address Bank  $", #$FF
 
 CrashTextMemSelectHigh:
-    db #$28, "Select Address High  $", #$FF
+    db "Select Address High  $", #$FF
 
 CrashTextMemSelectLow:
-    db #$28, "Select Address Low   $", #$FF
+    db "Select Address Low   $", #$FF
 
 CrashTextPlaceholder1:
     table resources/header.tbl
-    db #$28, "Page 2: 404 Page not found", #$FF
+    db "Page 2: 404 Page not found", #$FF
     table resources/normal.tbl
 
 CrashTextPlaceholder2:
 ; Page 3: LRSlSt Soft Reset
-    db #$28, "Page 3: ", #$8D, #$8E, #$85, #$84, " Soft Reset", #$FF
+    db "Page 3: ", #$8D, #$8E, #$85, #$84, " Soft Reset", #$FF
 endif
 
 print pc, " crash text end"
