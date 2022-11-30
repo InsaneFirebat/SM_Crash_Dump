@@ -397,9 +397,12 @@ CrashDump:
     LDA.l #CrashTextHeader>>16 : STA !ram_crash_text_bank
     LDX #$0086 : JSR crash_draw_text
 
+    ; -- Draw footer messages --
+if !EXTRA_PAGES
     LDA.l #CrashTextFooter1 : STA !ram_crash_text
     LDA.l #CrashTextFooter1>>16 : STA !ram_crash_text_bank
     LDX #$0646 : JSR crash_draw_text
+endif
 
     LDA.l #CrashTextFooter2 : STA !ram_crash_text
     LDA.l #CrashTextFooter2>>16 : STA !ram_crash_text_bank
