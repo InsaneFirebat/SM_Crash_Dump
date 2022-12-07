@@ -992,7 +992,7 @@ crash_tileset_transfer:
     LDX #$4000 : STX $2116 ; VRAM address (8000 in vram)
     LDX #crash_gfx_table : STX $4302 ; Source offset
     LDA #crash_gfx_table>>16 : STA $4304 ; Source bank
-    LDX #$0A00 : STX $4305 ; Size (0x10 = 1 tile)
+    LDX #$0900 : STX $4305 ; Size (0x10 = 1 tile)
     LDA #$01 : STA $4300 ; word, normal increment (DMA MODE)
     LDA #$18 : STA $4301 ; destination (VRAM write)
     LDA #$01 : STA $420B ; initiate DMA (channel 1)
@@ -1126,7 +1126,7 @@ print pc, " crash text end"
 org !GraphicsFreespace
 print pc, " Crash graphics start"
 crash_gfx_table:
-    ; A00h bytes
+    ; 900h bytes
     incbin resources/crash_gfx.bin
 print pc, " Crash graphics end"
 
