@@ -831,21 +831,21 @@ CrashPlaceholderPage3:
 ; test dummies
 {
     ; -- Draw header --
-    LDA.w #CrashTextHeader : STA $C5
-    LDA.w #CrashTextHeader>>16 : STA $C7
+    LDA.w #CrashTextHeader : STA !ram_crash_text
+    LDA.w #CrashTextHeader>>16 : STA !ram_crash_text_bank
     LDX #$00C6 : JSR crash_draw_text
 
-    LDA.w #CrashTextPlaceholder2 : STA $C5
-    LDA.w #CrashTextPlaceholder2>>16 : STA $C7
+    LDA.w #CrashTextPlaceholder2 : STA !ram_crash_text
+    LDA.w #CrashTextPlaceholder2>>16 : STA !ram_crash_text_bank
     LDX #$0388 : JSR crash_draw_text
 
     ; -- Draw footer message --
-    LDA.w #CrashTextFooter3 : STA $C5
-    LDA.w #CrashTextFooter3>>16 : STA $C7
+    LDA.w #CrashTextFooter3 : STA !ram_crash_text
+    LDA.w #CrashTextFooter3>>16 : STA !ram_crash_text_bank
     LDX #$0606 : JSR crash_draw_text
 
-    LDA.w #CrashTextFooter4 : STA $C5
-    LDA.w #CrashTextFooter4>>16 : STA $C7
+    LDA.w #CrashTextFooter4 : STA !ram_crash_text
+    LDA.w #CrashTextFooter4>>16 : STA !ram_crash_text_bank
     LDX #$0646 : JSR crash_draw_text
 
     RTS
