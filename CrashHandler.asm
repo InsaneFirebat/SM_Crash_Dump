@@ -7,7 +7,7 @@ lorom
 
 ; Configure stuff here
 
-!EXTRA_PAGES = 0 ; Set to 1 to add the memory viewer and extra page
+!EXTRA_PAGES ?= 0 ; Set to 1 to add the memory viewer and extra page
 
 !Bank80Freespace = $80E000 ; >2D0h bytes
 !CodeFreespace = $80E200 ; >640h bytes if single page, <A00h bytes if extra pages enabled, banks $80-BF
@@ -43,6 +43,7 @@ lorom
 !ram_crash_mem_viewer = !CRASHDUMP+$52
 !ram_crash_mem_viewer_bank = !CRASHDUMP+$54
 !ram_crash_temp = !CRASHDUMP+$56
+!ram_crash_bg = !CRASHDUMP+$58
 
 !ram_crash_input = !CRASHDUMP+$60
 !ram_crash_input_new = !CRASHDUMP+$62
@@ -297,9 +298,9 @@ CrashViewer:
     LDA #$17 : STA $212D  ; Enable BG3 on subscreen
     LDA #$02 : STA $2130  ; Add subscreen to color math
     LDA #$33 : STA $2131  ; Enable color math on backgrounds and OAM
-    LDA #$0F : STA $2100  ; Force blank off, max brightness
     STZ $2111 : STZ $2111 ; BG3 X scroll, write twice
     STZ $2112 : STZ $2112 ; BG3 Y scroll, write twice
+    LDA #$0F : STA $2100  ; Force blank off, max brightness
 
     %ai16()
     JSL crash_next_frame
@@ -308,6 +309,7 @@ CrashViewer:
 
     LDA #$0000 : STA !ram_crash_page : STA !ram_crash_palette : STA !ram_crash_cursor
     STA !ram_crash_input : STA !ram_crash_input_new
+    LDA #$0001 : STA !ram_crash_bg
     LDA $8F : STA !ram_crash_input_prev
     LDA #$0A44 : STA !ram_crash_mem_viewer
     LDA #$007E : STA !ram_crash_mem_viewer_bank
@@ -370,12 +372,14 @@ endif
 
   .decPalette
     LDA !ram_crash_palette : BNE +
+    JSR crash_toggle_bg
     LDA #$0008
 +   DEC : STA !ram_crash_palette
     BRA .updateCGRAM
 
   .incPalette
     LDA !ram_crash_palette : CMP #$0007 : BMI +
+    JSR crash_toggle_bg
     LDA #$FFFF
 +   INC : STA !ram_crash_palette
 
@@ -827,21 +831,21 @@ CrashPlaceholderPage3:
 ; test dummies
 {
     ; -- Draw header --
-    LDA.l #CrashTextHeader : STA $00
-    LDA.l #CrashTextHeader>>16 : STA $02
+    LDA.w #CrashTextHeader : STA $C5
+    LDA.w #CrashTextHeader>>16 : STA $C7
     LDX #$00C6 : JSR crash_draw_text
 
-    LDA.l #CrashTextPlaceholder2 : STA $00
-    LDA.l #CrashTextPlaceholder2>>16 : STA $02
+    LDA.w #CrashTextPlaceholder2 : STA $C5
+    LDA.w #CrashTextPlaceholder2>>16 : STA $C7
     LDX #$0388 : JSR crash_draw_text
 
     ; -- Draw footer message --
-    LDA.l #CrashTextFooter3 : STA $00
-    LDA.l #CrashTextFooter3>>16 : STA $02
+    LDA.w #CrashTextFooter3 : STA $C5
+    LDA.w #CrashTextFooter3>>16 : STA $C7
     LDX #$0606 : JSR crash_draw_text
 
-    LDA.l #CrashTextFooter4 : STA $00
-    LDA.l #CrashTextFooter4>>16 : STA $02
+    LDA.w #CrashTextFooter4 : STA $C5
+    LDA.w #CrashTextFooter4>>16 : STA $C7
     LDX #$0646 : JSR crash_draw_text
 
     RTS
@@ -1001,6 +1005,25 @@ crash_tileset_transfer:
     LDA #$01 : STA $420B ; initiate DMA (channel 1)
     PLP
     RTL
+}
+
+crash_toggle_bg:
+{
+    %a8()
+    LDA #$80 : STA $2100 ; enable forced blanking
+    LDA !ram_crash_bg : BEQ .enableBG
+    ; disable BG1/2 and sprites on main/sub screen
+    LDA #$04 : STA $212C : STA $212D
+    BRA .done
+  .enableBG
+    ; enable BG1/2 and sprites on main/sub screen
+    LDA #$17 : STA $212C : STA $212D
+    
+  .done
+    LDA #$0F : STA $2100 ; disable forced blanking
+    LDA !ram_crash_bg : EOR #$01 : STA !ram_crash_bg
+    %a16()
+    RTS
 }
 
 crash_next_frame:
